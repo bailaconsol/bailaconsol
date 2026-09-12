@@ -174,28 +174,6 @@
 
   [hidden] { display: none !important; }
 
-  #successView .icon {
-    width: 64px;
-    height: 64px;
-    background: #FFD500;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 20px;
-    font-size: 32px;
-  }
-
-  #successView h2 {
-    font-size: 22px;
-    margin-bottom: 12px;
-  }
-
-  #successView p {
-    font-size: 15px;
-    color: #333333;
-    line-height: 1.6;
-  }
 </style>
 </head>
 <body>
@@ -229,12 +207,6 @@
         <button type="submit">¡Regístrate aquí!</button>
       </form>
       <p class="fineprint"><span class="badge-atencion">Atención</span>Guarda bien tu correo: lo necesitarás para entrar a la clase el día del evento.</p>
-    </div>
-
-    <div class="card" id="successView" hidden>
-      <div class="icon">✅</div>
-      <h2>¡Tu lugar está separado!</h2>
-      <p>Te esperamos el próximo jueves — 11hrs México / 12hrs Colombia / 14hrs Argentina / 19hrs España.<br><br>El día de la clase, vuelve a <strong>clase.bachataconsol.com</strong> y escribe este mismo correo para recibir tu enlace de acceso.</p>
     </div>
 
     <p class="footer-link">¿Ya te registraste antes y es el día de tu clase? <a href="https://clase.bachataconsol.com/">Entra aquí</a></p>
@@ -291,9 +263,6 @@
   const nameInput = document.getElementById('nameInput');
   const emailInput = document.getElementById('emailInput');
   const errorMsg = document.getElementById('errorMsg');
-  const formCard = document.getElementById('formCard');
-  const successView = document.getElementById('successView');
-
   const SYSTEME_IO_ACTION = 'https://systeme.io/embedded/44381972/subscription';
   const submitButton = form.querySelector('button[type="submit"]');
 
@@ -330,8 +299,7 @@
         localStorage.setItem(key, JSON.stringify(registros));
       } catch (err) {}
 
-      formCard.hidden = true;
-      successView.hidden = false;
+      window.location.href = '/registro/confirmacion';
     });
   });
 </script>
