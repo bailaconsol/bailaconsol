@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Acceso - Clase de Cortesía</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #FFD500;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  .card {
+    background: #FFFFFF;
+    border-radius: 16px;
+    max-width: 480px;
+    width: 100%;
+    padding: 48px 36px;
+    text-align: center;
+    box-shadow: 0 12px 32px rgba(0,0,0,0.18);
+  }
+
+  .icon {
+    width: 64px;
+    height: 64px;
+    background: #FFD500;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 24px;
+    font-size: 32px;
+  }
+
+  h1 {
+    color: #111111;
+    font-size: 22px;
+    line-height: 1.35;
+    margin-bottom: 16px;
+  }
+
+  p.subtitle {
+    color: #333333;
+    font-size: 15px;
+    margin-bottom: 28px;
+    line-height: 1.6;
+  }
+
+  a.btn {
+    display: block;
+    width: 100%;
+    padding: 14px 16px;
+    font-size: 16px;
+    font-weight: 700;
+    color: #FFFFFF;
+    background: #111111;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.2s, transform 0.1s;
+  }
+
+  a.btn:hover {
+    background: #2b2b2b;
+  }
+
+  a.btn:active {
+    transform: scale(0.98);
+  }
+
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+
+  <div class="card">
+
+    <div id="viewNuevo" hidden>
+      <div class="icon">✅</div>
+      <h1>¡Confirmado! Nos vemos en la clase</h1>
+      <p class="subtitle">Es tu primera vez en la Clase de Cortesía de Bachata Femenina. Guarda este enlace y conéctate a la hora indicada.</p>
+      <a class="btn" href="https://us02web.zoom.us/j/85175441166?pwd=PVxfU8DE2elnGG8uX7iy8rXgdcdqXf.1" target="_blank" rel="noopener">Entrar a la clase por Zoom</a>
+    </div>
+
+    <div id="viewRepetido" hidden>
+      <div class="icon">⚠️</div>
+      <h1>Ya tomaste tu Clase de Cortesía</h1>
+      <p class="subtitle">Este correo ya usó su clase de cortesía gratuita, así que no es posible tomar otra. Si quieres seguir practicando bachata femenina, únete a la comunidad en Skool.</p>
+      <a class="btn" href="https://www.skool.com/bachata-femenina-con-sol-8823/about" target="_blank" rel="noopener">Unirme en Skool</a>
+    </div>
+
+    <div id="viewSinDatos" hidden>
+      <div class="icon">💃</div>
+      <h1>No encontramos tu solicitud</h1>
+      <p class="subtitle">Por favor vuelve a la página anterior e ingresa tu correo para continuar.</p>
+      <a class="btn" href="confirmacion.html">Volver</a>
+    </div>
+
+  </div>
+
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const status = params.get('status');
+
+  const viewNuevo = document.getElementById('viewNuevo');
+  const viewRepetido = document.getElementById('viewRepetido');
+  const viewSinDatos = document.getElementById('viewSinDatos');
+
+  if (status === 'nuevo') {
+    viewNuevo.hidden = false;
+  } else if (status === 'repetido') {
+    viewRepetido.hidden = false;
+  } else {
+    viewSinDatos.hidden = false;
+  }
+</script>
+
+</body>
+</html>
