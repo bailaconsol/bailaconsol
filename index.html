@@ -114,6 +114,11 @@
     transform: scale(0.98);
   }
 
+  button:disabled {
+    background: #555555;
+    cursor: default;
+  }
+
   .error {
     color: #B00020;
     font-size: 13px;
@@ -138,44 +143,62 @@
         <input type="email" id="emailInput" name="email" placeholder="tucorreo@ejemplo.com" required>
         <div class="error" id="errorMsg">Por favor ingresa un correo válido.</div>
       </div>
-      <button type="submit">Continuar</button>
+      <button type="submit" id="submitButton">Continuar</button>
     </form>
   </div>
 
 <script>
+  const SUPABASE_URL = 'https://czrlkgnoexrvhssepely.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_A8BB12yl_8s7zvvGVsEOIA_BdZFnD1W';
+
   const form = document.getElementById('accessForm');
   const emailInput = document.getElementById('emailInput');
   const errorMsg = document.getElementById('errorMsg');
+  const submitButton = document.getElementById('submitButton');
 
-  form.addEventListener('submit', function (e) {
+  function showError(message) {
+    errorMsg.textContent = message;
+    errorMsg.classList.add('visible');
+    emailInput.style.borderColor = '#B00020';
+  }
+
+  form.addEventListener('submit', async function (e) {
     e.preventDefault();
     const email = emailInput.value.trim();
     const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
     if (!isValid) {
-      errorMsg.classList.add('visible');
-      emailInput.style.borderColor = '#B00020';
+      showError('Por favor ingresa un correo válido.');
       return;
     }
 
     errorMsg.classList.remove('visible');
     emailInput.style.borderColor = '#111111';
+    submitButton.disabled = true;
+    submitButton.textContent = 'Verificando...';
 
-    // Simulación local de "ya usó la clase de cortesía".
-    // Para una validación real contra todos tus inscritos, esto debería
-    // consultarse en un backend/Google Sheet en vez de localStorage.
-    const key = 'clasesCortesiaUsadas';
-    const usados = JSON.parse(localStorage.getItem(key) || '[]');
-    const emailNormalizado = email.toLowerCase();
-    const yaUso = usados.includes(emailNormalizado);
+    try {
+      const response = await fetch(SUPABASE_URL + '/rest/v1/rpc/check_and_mark_cortesia_access', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': SUPABASE_KEY,
+          'Authorization': 'Bearer ' + SUPABASE_KEY
+        },
+        body: JSON.stringify({ p_email: email })
+      });
 
-    if (!yaUso) {
-      usados.push(emailNormalizado);
-      localStorage.setItem(key, JSON.stringify(usados));
+      if (!response.ok) {
+        throw new Error('request_failed');
+      }
+
+      const status = await response.json();
+      window.location.href = 'bienvenida.html?status=' + status + '&email=' + encodeURIComponent(email);
+    } catch (err) {
+      showError('No pudimos verificar tu correo. Revisa tu conexión e intenta de nuevo.');
+      submitButton.disabled = false;
+      submitButton.textContent = 'Continuar';
     }
-
-    const status = yaUso ? 'repetido' : 'nuevo';
-    window.location.href = 'bienvenida.html?status=' + status + '&email=' + encodeURIComponent(email);
   });
 
   emailInput.addEventListener('input', function () {

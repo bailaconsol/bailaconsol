@@ -76,6 +76,14 @@
     transform: scale(0.98);
   }
 
+  a.btn-secondary {
+    display: block;
+    margin-top: 14px;
+    font-size: 14px;
+    color: #333333;
+    text-decoration: underline;
+  }
+
   [hidden] { display: none !important; }
 </style>
 </head>
@@ -84,17 +92,18 @@
   <div class="card">
 
     <div id="viewNuevo" hidden>
-      <div class="icon">✅</div>
-      <h1>¡Confirmado! Nos vemos en la clase</h1>
-      <p class="subtitle">Es tu primera vez en la Clase de Cortesía de Bachata Femenina. Guarda este enlace y conéctate a la hora indicada.</p>
-      <a class="btn" href="https://us02web.zoom.us/j/85175441166?pwd=PVxfU8DE2elnGG8uX7iy8rXgdcdqXf.1" target="_blank" rel="noopener">Entrar a la clase por Zoom</a>
+      <div class="icon">🔴</div>
+      <h1>¡Entra ahora! Estamos en vivo</h1>
+      <p class="subtitle">La clase inició hace 20 segundos. Únete ya para no perderte el comienzo.</p>
+      <a class="btn" href="https://us06web.zoom.us/j/83077817729?pwd=oSqMyEbhYX8DBG2KA9MX0o5ib9pnTH.1" target="_blank" rel="noopener">Unirme a la clase en vivo</a>
     </div>
 
     <div id="viewRepetido" hidden>
       <div class="icon">⚠️</div>
-      <h1>Ya tomaste tu Clase de Cortesía</h1>
-      <p class="subtitle">Este correo ya usó su clase de cortesía gratuita, así que no es posible tomar otra. Si quieres seguir practicando bachata femenina, únete a la comunidad en Skool.</p>
-      <a class="btn" href="https://www.skool.com/bachata-femenina-con-sol-8823/about" target="_blank" rel="noopener">Unirme en Skool</a>
+      <h1>Ya habías probado tu Clase de Cortesía</h1>
+      <p class="subtitle">Lo sentimos, al parecer este correo ya había probado la clase de cortesía antes. Si quieres seguir aprendiendo, accede a nuestra comunidad de bachata.</p>
+      <a class="btn" href="https://www.skool.com/bachata-femenina-con-sol-8823/about" target="_blank" rel="noopener">Unirme a la comunidad</a>
+      <a class="btn-secondary" href="https://api.whatsapp.com/send?phone=4917656784458&text=Hola%20Sol%2C%20intente%20unirme%20a%20la%20clase%20de%20cortesia%20en%20vivo%20de%20Bachata%20pero%20me%20sale%20un%20mensaje%20que%20ya%20la%20prob%C3%A9%20antes%20y%20es%20un%20error%2C%20aun%20no%20he%20participado." target="_blank" rel="noopener">¿No habías probado la clase antes? Creo que es un error</a>
     </div>
 
     <div id="viewSinDatos" hidden>
