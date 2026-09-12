@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Participantes - Clase de Cortesía</title>
+<title>Admin - Clase de Cortesía</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -49,6 +49,7 @@
     color: #111111;
   }
 
+  input[type="email"],
   input[type="password"] {
     width: 100%;
     padding: 14px 16px;
@@ -166,11 +167,12 @@
   <div class="lock-screen" id="lockScreen">
     <div class="lock-card">
       <div class="icon">🔒</div>
-      <h1>Panel de Participantes</h1>
+      <h1>Panel de Administración</h1>
       <form id="lockForm">
-        <input type="password" id="passwordInput" placeholder="Contraseña" required>
-        <button type="submit" id="unlockButton">Ver participantes</button>
-        <div class="error" id="lockError">Contraseña incorrecta.</div>
+        <input type="email" id="usernameInput" placeholder="Usuario" autocomplete="username" required>
+        <input type="password" id="passwordInput" placeholder="Contraseña" autocomplete="current-password" required>
+        <button type="submit" id="unlockButton">Iniciar sesión</button>
+        <div class="error" id="lockError">Usuario o contraseña incorrectos.</div>
       </form>
     </div>
   </div>
@@ -203,6 +205,7 @@
 
   const lockScreen = document.getElementById('lockScreen');
   const lockForm = document.getElementById('lockForm');
+  const usernameInput = document.getElementById('usernameInput');
   const passwordInput = document.getElementById('passwordInput');
   const unlockButton = document.getElementById('unlockButton');
   const lockError = document.getElementById('lockError');
@@ -258,6 +261,7 @@
 
   lockForm.addEventListener('submit', async function (e) {
     e.preventDefault();
+    const username = usernameInput.value.trim();
     const password = passwordInput.value;
     lockError.classList.remove('visible');
     unlockButton.disabled = true;
@@ -271,7 +275,7 @@
           'apikey': SUPABASE_KEY,
           'Authorization': 'Bearer ' + SUPABASE_KEY
         },
-        body: JSON.stringify({ p_password: password })
+        body: JSON.stringify({ p_username: username, p_password: password })
       });
 
       if (!response.ok) {
@@ -285,7 +289,7 @@
     } catch (err) {
       lockError.classList.add('visible');
       unlockButton.disabled = false;
-      unlockButton.textContent = 'Ver participantes';
+      unlockButton.textContent = 'Iniciar sesión';
     }
   });
 </script>
