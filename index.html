@@ -53,6 +53,19 @@
     line-height: 1.5;
   }
 
+  .badge-atencion {
+    display: inline-block;
+    background: #E00000;
+    color: #FFFFFF;
+    font-weight: 700;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    padding: 3px 10px;
+    border-radius: 999px;
+    margin-right: 6px;
+  }
+
   form {
     display: flex;
     flex-direction: column;
@@ -118,7 +131,7 @@
   <div class="card">
     <div class="icon">💃</div>
     <h1>Accede a la Clase de Cortesía de Bachata Femenina en vivo</h1>
-    <p class="subtitle">Escribe el correo con el que te registraste para acceder</p>
+    <p class="subtitle"><span class="badge-atencion">Atención</span>Escribe el mismo correo con el que te registraste para acceder a la Clase</p>
 
     <form id="accessForm" novalidate>
       <div>
