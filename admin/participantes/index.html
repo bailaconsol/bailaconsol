@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Participantes - Admin</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #FFD500;
+    min-height: 100vh;
+    padding: 20px;
+  }
+
+  .dashboard {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 4px 20px 48px;
+  }
+
+  .logout-bar {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 12px;
+  }
+
+  .logout-button {
+    width: auto;
+    padding: 8px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    background: #FFFFFF;
+    color: #111111;
+    border: 2px solid #111111;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+
+  .logout-button:hover {
+    background: #111111;
+    color: #FFFFFF;
+  }
+
+  .dashboard h1 {
+    color: #111111;
+    font-size: 24px;
+    margin-bottom: 6px;
+  }
+
+  .dashboard .summary {
+    color: #333333;
+    font-size: 14px;
+    margin-bottom: 20px;
+  }
+
+  .toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+  }
+
+  .search-wrap {
+    position: relative;
+    flex: 1;
+    min-width: 240px;
+    max-width: 420px;
+  }
+
+  .search-wrap svg {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 18px;
+    height: 18px;
+    color: #666666;
+    pointer-events: none;
+  }
+
+  #searchInput {
+    width: 100%;
+    padding: 11px 14px 11px 40px;
+    font-size: 14px;
+    border: 2px solid #111111;
+    border-radius: 8px;
+    outline: none;
+    background: #FFFFFF;
+  }
+
+  .page-size-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: #333333;
+  }
+
+  #pageSizeSelect {
+    padding: 8px 10px;
+    font-size: 14px;
+    border: 2px solid #111111;
+    border-radius: 8px;
+    background: #FFFFFF;
+    cursor: pointer;
+  }
+
+  .table-wrap {
+    background: #FFFFFF;
+    border-radius: 16px;
+    overflow-x: auto;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+  }
+
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    table-layout: auto;
+  }
+
+  th, td {
+    padding: 14px 18px;
+    text-align: left;
+    font-size: 14px;
+  }
+
+  td {
+    white-space: nowrap;
+  }
+
+  thead th {
+    background: #111111;
+    color: #FFFFFF;
+    position: sticky;
+    top: 0;
+    white-space: normal;
+  }
+
+  .th-inner {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .sort-btn {
+    background: none;
+    border: none;
+    padding: 2px;
+    display: flex;
+    align-items: center;
+    color: #AAAAAA;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  .sort-btn svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .sort-btn.active {
+    color: #FFD500;
+  }
+
+  thead th:hover .sort-btn {
+    color: #DDDDDD;
+  }
+
+  thead th:hover .sort-btn.active {
+    color: #FFD500;
+  }
+
+  tbody tr:nth-child(even) {
+    background: #FAFAFA;
+  }
+
+  tbody tr:hover {
+    background: #FFF7D6;
+  }
+
+  .si {
+    color: #1DA851;
+    font-weight: 700;
+  }
+
+  .attempts-flag {
+    color: #E00000;
+    font-weight: 700;
+  }
+
+  .empty-name {
+    color: #999999;
+  }
+
+  .empty-state {
+    padding: 40px;
+    text-align: center;
+    color: #666666;
+  }
+
+  .pagination {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 16px;
+  }
+
+  .pagination-info {
+    font-size: 13px;
+    color: #333333;
+  }
+
+  .pagination-buttons {
+    display: flex;
+    gap: 8px;
+  }
+
+  .pagination-buttons button {
+    padding: 8px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    background: #FFFFFF;
+    color: #111111;
+    border: 2px solid #111111;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+
+  .pagination-buttons button:disabled {
+    opacity: 0.4;
+    cursor: default;
+  }
+
+  .pagination-buttons button:not(:disabled):hover {
+    background: #111111;
+    color: #FFFFFF;
+  }
+
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+
+  <div class="dashboard" id="dashboard">
+    <div class="logout-bar">
+      <button type="button" class="logout-button" id="logoutButton">Cerrar sesión</button>
+    </div>
+    <h1>Participantes de la Clase de Cortesía</h1>
+    <p class="summary" id="summaryText"></p>
+
+    <div class="toolbar">
+      <div class="search-wrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="7"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input type="text" id="searchInput" placeholder="Buscar por nombre o correo...">
+      </div>
+      <div class="page-size-wrap">
+        Mostrar
+        <select id="pageSizeSelect">
+          <option value="10">10</option>
+          <option value="25">25</option>
+          <option value="50">50</option>
+          <option value="100">100</option>
+        </select>
+        por página
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr id="headerRow"></tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+      <div class="empty-state" id="emptyState" hidden>No se encontraron participantes.</div>
+    </div>
+
+    <div class="pagination">
+      <div class="pagination-info" id="paginationInfo"></div>
+      <div class="pagination-buttons">
+        <button type="button" id="prevPageButton">← Anterior</button>
+        <button type="button" id="nextPageButton">Siguiente →</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+  const SUPABASE_URL = 'https://czrlkgnoexrvhssepely.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_A8BB12yl_8s7zvvGVsEOIA_BdZFnD1W';
+  const SESSION_KEY = 'adminPanelAuth';
+  const LOGIN_URL = '/admin';
+
+  const ICON_SORT_ASC = '<path d="M6 20V4"></path><path d="M2 8l4-4 4 4"></path><line x1="11" y1="6" x2="21" y2="6"></line><line x1="11" y1="12" x2="18" y2="12"></line><line x1="11" y1="18" x2="15" y2="18"></line>';
+  const ICON_SORT_DESC = '<path d="M6 4v16"></path><path d="M2 16l4 4 4-4"></path><line x1="11" y1="6" x2="15" y2="6"></line><line x1="11" y1="12" x2="18" y2="12"></line><line x1="11" y1="18" x2="21" y2="18"></line>';
+
+  const COLUMNS = [
+    { key: 'index', label: 'Número' },
+    { key: 'name', label: 'Nombre (Opcional)' },
+    { key: 'email', label: 'Email' },
+    { key: 'used_at', label: 'Fecha que probó la Clase' },
+    { key: 'probo', label: 'Probó Clase Cortesía' },
+    { key: 'vecesProbo', label: 'Veces que probó' },
+    { key: 'attempts', label: 'Cantidad de veces que intentó' }
+  ];
+
+  let allRows = [];
+  let sortKey = 'used_at';
+  let sortDir = 'desc';
+  let currentPage = 1;
+  let pageSize = 10;
+
+  const dashboard = document.getElementById('dashboard');
+  const logoutButton = document.getElementById('logoutButton');
+  const summaryText = document.getElementById('summaryText');
+  const searchInput = document.getElementById('searchInput');
+  const pageSizeSelect = document.getElementById('pageSizeSelect');
+  const headerRow = document.getElementById('headerRow');
+  const tableBody = document.getElementById('tableBody');
+  const emptyState = document.getElementById('emptyState');
+  const paginationInfo = document.getElementById('paginationInfo');
+  const prevPageButton = document.getElementById('prevPageButton');
+  const nextPageButton = document.getElementById('nextPageButton');
+
+  function formatFecha(iso) {
+    const d = new Date(iso);
+    return d.toLocaleString('es-CO', {
+      day: '2-digit', month: '2-digit', year: 'numeric',
+      hour: '2-digit', minute: '2-digit'
+    });
+  }
+
+  function buildHeader() {
+    headerRow.innerHTML = '';
+    COLUMNS.forEach(col => {
+      const th = document.createElement('th');
+      const isActive = sortKey === col.key;
+      const icon = isActive && sortDir === 'desc' ? ICON_SORT_DESC : ICON_SORT_ASC;
+      th.innerHTML =
+        '<div class="th-inner" data-key="' + col.key + '">' +
+          '<span>' + col.label + '</span>' +
+          '<button type="button" class="sort-btn' + (isActive ? ' active' : '') + '" data-key="' + col.key + '">' +
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + icon + '</svg>' +
+          '</button>' +
+        '</div>';
+      headerRow.appendChild(th);
+    });
+
+    headerRow.querySelectorAll('[data-key]').forEach(el => {
+      el.addEventListener('click', function () {
+        const key = this.getAttribute('data-key');
+        if (sortKey === key) {
+          sortDir = sortDir === 'asc' ? 'desc' : 'asc';
+        } else {
+          sortKey = key;
+          sortDir = 'asc';
+        }
+        currentPage = 1;
+        render();
+      });
+    });
+  }
+
+  function compareRows(a, b) {
+    let result;
+    switch (sortKey) {
+      case 'index':
+        result = a._originalIndex - b._originalIndex;
+        break;
+      case 'name':
+        result = (a.name || '').localeCompare(b.name || '', 'es', { sensitivity: 'base' });
+        break;
+      case 'email':
+        result = a.email.localeCompare(b.email, 'es', { sensitivity: 'base' });
+        break;
+      case 'used_at':
+        result = new Date(a.used_at) - new Date(b.used_at);
+        break;
+      case 'attempts':
+        result = a.attempts - b.attempts;
+        break;
+      default:
+        result = 0;
+    }
+    return sortDir === 'desc' ? -result : result;
+  }
+
+  function getFilteredSortedRows() {
+    const query = searchInput.value.trim().toLowerCase();
+    let rows = allRows;
+    if (query) {
+      rows = rows.filter(r =>
+        (r.name || '').toLowerCase().includes(query) ||
+        r.email.toLowerCase().includes(query)
+      );
+    }
+    return [...rows].sort(compareRows);
+  }
+
+  function render() {
+    buildHeader();
+
+    const filtered = getFilteredSortedRows();
+    const totalRows = filtered.length;
+    const totalPages = Math.max(1, Math.ceil(totalRows / pageSize));
+    if (currentPage > totalPages) currentPage = totalPages;
+
+    const start = (currentPage - 1) * pageSize;
+    const pageRows = filtered.slice(start, start + pageSize);
+
+    tableBody.innerHTML = '';
+
+    if (!totalRows) {
+      emptyState.hidden = false;
+    } else {
+      emptyState.hidden = true;
+
+      pageRows.forEach(row => {
+        const tr = document.createElement('tr');
+
+        const nameCell = row.name
+          ? row.name
+          : '<span class="empty-name">—</span>';
+
+        const attemptsCell = row.attempts > 1
+          ? '<span class="attempts-flag">' + row.attempts + '</span>'
+          : row.attempts;
+
+        tr.innerHTML =
+          '<td>' + row._originalIndex + '</td>' +
+          '<td>' + nameCell + '</td>' +
+          '<td>' + row.email + '</td>' +
+          '<td>' + formatFecha(row.used_at) + '</td>' +
+          '<td class="si">SI</td>' +
+          '<td>1</td>' +
+          '<td>' + attemptsCell + '</td>';
+
+        tableBody.appendChild(tr);
+      });
+    }
+
+    summaryText.textContent = allRows.length === 1
+      ? '1 persona ha probado la clase de cortesía.'
+      : allRows.length + ' personas han probado la clase de cortesía.';
+
+    paginationInfo.textContent = totalRows
+      ? 'Mostrando ' + (start + 1) + '–' + Math.min(start + pageSize, totalRows) + ' de ' + totalRows
+      : 'Sin resultados';
+
+    prevPageButton.disabled = currentPage <= 1;
+    nextPageButton.disabled = currentPage >= totalPages;
+  }
+
+  searchInput.addEventListener('input', function () {
+    currentPage = 1;
+    render();
+  });
+
+  pageSizeSelect.addEventListener('change', function () {
+    pageSize = parseInt(pageSizeSelect.value, 10);
+    currentPage = 1;
+    render();
+  });
+
+  prevPageButton.addEventListener('click', function () {
+    if (currentPage > 1) {
+      currentPage--;
+      render();
+    }
+  });
+
+  nextPageButton.addEventListener('click', function () {
+    currentPage++;
+    render();
+  });
+
+  logoutButton.addEventListener('click', function () {
+    sessionStorage.removeItem(SESSION_KEY);
+    window.location.href = LOGIN_URL;
+  });
+
+  async function fetchParticipantes(username, password) {
+    const response = await fetch(SUPABASE_URL + '/rest/v1/rpc/get_participantes', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SUPABASE_KEY,
+        'Authorization': 'Bearer ' + SUPABASE_KEY
+      },
+      body: JSON.stringify({ p_username: username, p_password: password })
+    });
+
+    if (!response.ok) {
+      throw new Error('unauthorized');
+    }
+
+    return response.json();
+  }
+
+  (async function init() {
+    const saved = sessionStorage.getItem(SESSION_KEY);
+    if (!saved) {
+      window.location.href = LOGIN_URL;
+      return;
+    }
+
+    try {
+      const { username, password } = JSON.parse(saved);
+      const rows = await fetchParticipantes(username, password);
+
+      const chronological = [...rows].sort((a, b) => new Date(a.used_at) - new Date(b.used_at));
+      chronological.forEach((row, i) => { row._originalIndex = i + 1; });
+      allRows = rows;
+
+      render();
+    } catch (err) {
+      sessionStorage.removeItem(SESSION_KEY);
+      window.location.href = LOGIN_URL;
+    }
+  })();
+</script>
+
+</body>
+</html>
