@@ -9,7 +9,7 @@
 
   body {
     font-family: 'Segoe UI', Arial, sans-serif;
-    background: #FFD500;
+    background: #FFFFFF;
     min-height: 100vh;
     display: flex;
     align-items: center;
@@ -23,7 +23,8 @@
     max-width: 560px;
     width: 100%;
     padding: 40px 32px;
-    box-shadow: 0 12px 32px rgba(0,0,0,0.18);
+    border: 1px solid #EEEEEE;
+    box-shadow: 0 12px 32px rgba(0,0,0,0.08);
   }
 
   .progress {
@@ -77,7 +78,9 @@
   }
 
   .option {
-    display: block;
+    display: flex;
+    align-items: center;
+    gap: 12px;
     width: 100%;
     text-align: left;
     padding: 14px 16px;
@@ -98,6 +101,29 @@
     border-color: #111111;
     background: #FFF7D6;
     font-weight: 600;
+  }
+
+  .option .letter {
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #111111;
+    color: #FFFFFF;
+    font-size: 13px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .option.selected .letter {
+    background: #FFD500;
+    color: #111111;
+  }
+
+  .option .label-text {
+    flex: 1;
   }
 
   button.next-btn {
@@ -138,7 +164,7 @@
       <div class="dot" data-dot="3"></div>
     </div>
 
-    <div id="intro" class="intro">Antes de darte el enlace de la clase, quiero hacerte 3 preguntas rápidas. Así me aseguro que la clase te va a servir de verdad y que armamos un grupo de mujeres con ganas real de aprender.</div>
+    <div id="intro" class="intro">Antes de darte el enlace, quiero conocerte un poco mejor con 3 preguntas rápidas y confirmar que esta clase es para ti.</div>
 
     <div id="questionContainer">
       <div class="step-label" id="stepLabel">Pregunta 1 de 3</div>
@@ -196,12 +222,14 @@
 
     dots.forEach((dot, i) => dot.classList.toggle('done', i < currentStep));
 
+    const LETTERS = ['A', 'B', 'C', 'D', 'E'];
     optionsContainer.innerHTML = '';
     q.options.forEach((opt, i) => {
       const btn = document.createElement('button');
       btn.type = 'button';
       btn.className = 'option';
-      btn.textContent = opt.label;
+      btn.innerHTML = '<span class="letter">' + LETTERS[i] + '</span><span class="label-text"></span>';
+      btn.querySelector('.label-text').textContent = opt.label;
       btn.addEventListener('click', function () {
         optionsContainer.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
         btn.classList.add('selected');
