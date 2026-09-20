@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3 Preguntas Rápidas</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #FFD500;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  .card {
+    background: #FFFFFF;
+    border-radius: 16px;
+    max-width: 560px;
+    width: 100%;
+    padding: 40px 32px;
+    box-shadow: 0 12px 32px rgba(0,0,0,0.18);
+  }
+
+  .progress {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 24px;
+  }
+
+  .progress .dot {
+    flex: 1;
+    height: 6px;
+    border-radius: 999px;
+    background: #EEEEEE;
+    transition: background 0.2s;
+  }
+
+  .progress .dot.done {
+    background: #FFD500;
+  }
+
+  .step-label {
+    font-size: 13px;
+    font-weight: 700;
+    color: #999999;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 10px;
+  }
+
+  .intro {
+    font-size: 14px;
+    color: #333333;
+    line-height: 1.6;
+    margin-bottom: 24px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #EEEEEE;
+  }
+
+  h1 {
+    font-size: 20px;
+    line-height: 1.4;
+    color: #111111;
+    margin-bottom: 22px;
+  }
+
+  .options {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+
+  .option {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 14px 16px;
+    font-size: 15px;
+    color: #111111;
+    background: #FFFFFF;
+    border: 2px solid #DDDDDD;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+  }
+
+  .option:hover {
+    border-color: #111111;
+  }
+
+  .option.selected {
+    border-color: #111111;
+    background: #FFF7D6;
+    font-weight: 600;
+  }
+
+  button.next-btn {
+    width: 100%;
+    padding: 14px 16px;
+    font-size: 16px;
+    font-weight: 700;
+    color: #FFFFFF;
+    background: #111111;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+  }
+
+  button.next-btn:disabled {
+    background: #CCCCCC;
+    cursor: default;
+  }
+
+  button.next-btn:not(:disabled):hover {
+    background: #2b2b2b;
+  }
+
+  button.next-btn:not(:disabled):active {
+    transform: scale(0.98);
+  }
+
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+
+  <div class="card">
+    <div class="progress" id="progress">
+      <div class="dot" data-dot="1"></div>
+      <div class="dot" data-dot="2"></div>
+      <div class="dot" data-dot="3"></div>
+    </div>
+
+    <div id="intro" class="intro">Antes de darte el enlace de la clase, quiero hacerte 3 preguntas rápidas. Así me aseguro que la clase te va a servir de verdad y que armamos un grupo de mujeres con ganas real de aprender.</div>
+
+    <div id="questionContainer">
+      <div class="step-label" id="stepLabel">Pregunta 1 de 3</div>
+      <h1 id="questionText"></h1>
+      <div class="options" id="optionsContainer"></div>
+      <button type="button" class="next-btn" id="nextButton" disabled>Siguiente</button>
+    </div>
+  </div>
+
+<script>
+  const QUESTIONS = [
+    {
+      text: '¿Puedes asistir normalmente a las clases en vivo, de 19:00 a 20:00 hora de Europa? (11am Ciudad de México)',
+      options: [
+        { label: 'Sí, ese horario me funciona casi siempre', correct: true },
+        { label: 'Puedo algunas veces, no todas las semanas', correct: true },
+        { label: 'No, ese horario no me funciona', correct: false }
+      ]
+    },
+    {
+      text: '¿Estás dispuesta a dedicar tiempo a practicar por tu cuenta para poder ir progresando?',
+      options: [
+        { label: 'Sí, puedo practicar aunque sea un poco cada semana', correct: true },
+        { label: 'Podría, pero no tengo mucho tiempo', correct: false },
+        { label: 'No, busco algo sin tener que practicar por mi lado', correct: false }
+      ]
+    },
+    {
+      text: 'Si tuvieras acompañamiento personalizado directo conmigo para corregir tu técnica y progresar, ¿estarías dispuesta a invertir a partir de 27 USD al mes?',
+      options: [
+        { label: 'Sí, sin problema', correct: true },
+        { label: 'Sí, pero tendría que organizarme para poder pagarlo', correct: true },
+        { label: 'No, prefiero seguir aprendiendo con contenido gratuito', correct: false }
+      ]
+    }
+  ];
+
+  let currentStep = 0;
+  const answers = [];
+
+  const introEl = document.getElementById('intro');
+  const stepLabel = document.getElementById('stepLabel');
+  const questionText = document.getElementById('questionText');
+  const optionsContainer = document.getElementById('optionsContainer');
+  const nextButton = document.getElementById('nextButton');
+  const dots = document.querySelectorAll('.dot');
+
+  function renderQuestion() {
+    const q = QUESTIONS[currentStep];
+    introEl.hidden = currentStep !== 0;
+    stepLabel.textContent = 'Pregunta ' + (currentStep + 1) + ' de ' + QUESTIONS.length;
+    questionText.textContent = q.text;
+    nextButton.textContent = currentStep === QUESTIONS.length - 1 ? 'Finalizar' : 'Siguiente';
+    nextButton.disabled = true;
+
+    dots.forEach((dot, i) => dot.classList.toggle('done', i < currentStep));
+
+    optionsContainer.innerHTML = '';
+    q.options.forEach((opt, i) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'option';
+      btn.textContent = opt.label;
+      btn.addEventListener('click', function () {
+        optionsContainer.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+        btn.classList.add('selected');
+        answers[currentStep] = opt.correct;
+        nextButton.disabled = false;
+      });
+      optionsContainer.appendChild(btn);
+    });
+  }
+
+  nextButton.addEventListener('click', function () {
+    if (currentStep < QUESTIONS.length - 1) {
+      currentStep++;
+      renderQuestion();
+      return;
+    }
+
+    const qualifies = answers.length === QUESTIONS.length && answers.every(Boolean);
+    window.location.href = qualifies ? '/confirmacion' : '/no-calificas';
+  });
+
+  renderQuestion();
+</script>
+
+</body>
+</html>
