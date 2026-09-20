@@ -15,40 +15,34 @@
 
   .hero {
     background: #FFD500;
-    padding: 40px 20px 32px;
-    text-align: center;
+    padding: 16px 20px;
   }
 
-  .hero h1 {
-    font-size: 26px;
-    line-height: 1.35;
-    max-width: 640px;
-    margin: 0 auto 24px;
-  }
-
-  .countdown {
+  .hero-inner {
+    max-width: 900px;
+    margin: 0 auto;
     display: flex;
-    justify-content: center;
-    gap: 18px;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
     flex-wrap: wrap;
   }
 
-  .countdown .unit {
-    min-width: 64px;
-  }
-
-  .countdown .num {
-    font-size: 34px;
-    font-weight: 800;
-    color: #E00000;
-    font-variant-numeric: tabular-nums;
-  }
-
-  .countdown .label {
-    font-size: 12px;
+  .hero-text {
+    font-size: 16px;
     font-weight: 700;
-    letter-spacing: 0.05em;
+    line-height: 1.35;
     color: #111111;
+    flex: 1;
+    min-width: 200px;
+  }
+
+  .countdown {
+    font-size: 15px;
+    font-weight: 800;
+    color: #111111;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
   }
 
   main {
@@ -58,10 +52,15 @@
     text-align: center;
   }
 
-  .intro {
-    font-size: 17px;
-    line-height: 1.6;
-    margin-bottom: 28px;
+  h1.intro {
+    font-size: 22px;
+    line-height: 1.5;
+    margin-bottom: 24px;
+  }
+
+  h3.clase-tag,
+  h3.schedule-title {
+    margin: 0;
   }
 
   .badge-atencion {
@@ -80,20 +79,15 @@
   .clase-tag {
     color: #E00000;
     font-weight: 800;
-    font-size: 20px;
-    margin-bottom: 8px;
+    font-size: 19px;
+    margin-bottom: 6px;
   }
 
   .schedule-title {
     font-weight: 700;
-    font-size: 18px;
-    margin-bottom: 4px;
-  }
-
-  .schedule-detail {
-    font-size: 15px;
+    font-size: 16px;
     color: #333333;
-    margin-bottom: 32px;
+    margin-bottom: 28px;
   }
 
   .card {
@@ -163,9 +157,9 @@
   .mockup-image {
     display: block;
     width: 100%;
-    max-width: 520px;
+    max-width: 320px;
     height: auto;
-    margin: 32px auto 0;
+    margin: 28px auto 0;
   }
 
   .footer-link {
@@ -187,21 +181,19 @@
 <body>
 
   <div class="hero">
-    <h1>Regístrate a la Clase de Bachata Femenina EN VIVO antes que acabe el tiempo:</h1>
-    <div class="countdown" id="countdown">
-      <div class="unit"><div class="num" id="cd-days">00</div><div class="label">DÍAS</div></div>
-      <div class="unit"><div class="num" id="cd-hours">00</div><div class="label">HORAS</div></div>
-      <div class="unit"><div class="num" id="cd-minutes">00</div><div class="label">MINUTOS</div></div>
-      <div class="unit"><div class="num" id="cd-seconds">00</div><div class="label">SEGUNDOS</div></div>
+    <div class="hero-inner">
+      <div class="hero-text">Regístrate antes que acabe el tiempo:</div>
+      <div class="countdown" id="countdown">
+        <span id="cd-hours">0</span> horas, <span id="cd-minutes">00</span> minutos, <span id="cd-seconds">00</span> segundos
+      </div>
     </div>
   </div>
 
   <main>
-    <p class="intro">💃 Aprende Bachata Femenina desde cero sin sentirte perdida, con una guía clara, consejos personalizados y una comunidad que te acompaña.</p>
+    <h1 class="intro">💃 Aprende Bachata Femenina desde cero sin sentirte perdida, con una guía clara, consejos personalizados y una comunidad que te acompaña.</h1>
 
-    <div class="clase-tag">🔴 CLASE DE PRUEBA GRATUITA EN VIVO 🔴</div>
-    <div class="schedule-title">Nos vemos el próximo jueves:</div>
-    <div class="schedule-detail">11hrs México / 12hrs Colombia / 14hrs Argentina / 19hrs España</div>
+    <h3 class="clase-tag">🔴 CLASE DE PRUEBA GRATUITA EN VIVO 🔴</h3>
+    <h3 class="schedule-title">Nos vemos el próximo jueves: 11hrs México</h3>
 
     <div class="card" id="formCard">
       <form id="registroForm" novalidate>
@@ -248,20 +240,17 @@
     const diff = target - new Date();
 
     if (diff <= 0) {
-      document.getElementById('cd-days').textContent = '00';
-      document.getElementById('cd-hours').textContent = '00';
+      document.getElementById('cd-hours').textContent = '0';
       document.getElementById('cd-minutes').textContent = '00';
       document.getElementById('cd-seconds').textContent = '00';
       return;
     }
 
-    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-    const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+    const totalHours = Math.floor(diff / (1000 * 60 * 60));
     const minutes = Math.floor((diff / (1000 * 60)) % 60);
     const seconds = Math.floor((diff / 1000) % 60);
 
-    document.getElementById('cd-days').textContent = pad(days);
-    document.getElementById('cd-hours').textContent = pad(hours);
+    document.getElementById('cd-hours').textContent = totalHours;
     document.getElementById('cd-minutes').textContent = pad(minutes);
     document.getElementById('cd-seconds').textContent = pad(seconds);
   }
